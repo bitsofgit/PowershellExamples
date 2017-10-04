@@ -44,6 +44,32 @@ function Check-Ip{
     return $response
 }
 
+#Function to check free space on all drives on the server
+function Check-DriveSpace{
+    param ($ComputerName)
+    $response = invoke-command  $ComputerName {
+        try {
+            $WhereQuery = "SELECT FreeSpace,DeviceID,Size FROM Win32_Logicaldisk"
+	        $WmiParams = @{
+		        'Query' = $WhereQuery
+		        'ErrorVariable' = 'MyError';
+		        'ErrorAction' = 'SilentlyContinue'
+	        }
+	        $WmiResult = Get-WmiObject @WmiParams
+            $drive_result = "Available Space: `n---------------- `n"
+	        foreach ($Result in $WmiResult) {
+		        if ($Result.Size) {
+                    $drive_result += ("(" + $Result.DeviceID + ") " + [math]::Round($Result.FreeSpace/1GB,2))+ " GB free of " + [math]::Round($Result.Size/1GB,2) + " GB`n"
+		        }
+	        }
+	        return $drive_result
+        } catch {
+	        return $_.Exception.Message
+        }
+    }
+    return $response
+}
+
 #Function to display logs on console and write it to file as well
 function Write-Log{
     param ($log)
@@ -70,10 +96,12 @@ foreach($server in $servers){
     if(Check-Access $server){
         $version = Check-Version $server
         $ipAddress = Check-Ip $server
+        $driveInfo = Check-DriveSpace $server
 
         # New detail can be added like this
         $serverInfo | Add-Member –MemberType NoteProperty –Name ".NET Version" –Value $version
         $serverInfo | Add-Member –MemberType NoteProperty –Name "IPv4 Address" –Value $ipAddress
+        $serverInfo | Add-Member –MemberType NoteProperty –Name "Disk Info." –Value $driveInfo
 
     }else{
         $serverInfo | Add-Member –MemberType NoteProperty –Name "ERROR" –Value "[ERROR]Unable to access Server $server"
