@@ -1,0 +1,171 @@
+Powershell Commands
+
+----------------------------
+General
+----------------------------
+get-alias
+all commands in powershell have aliases. For ex. dir or ls (from linux based systems) both point to the same alias get-childitems. get-alias gets the aliases for all the commands.
+
+get-childitem
+similar to dir or ls in linux
+
+get-command
+lists all the commands
+
+get-command -verb "get"
+lists all commands with the verb get in it
+
+get-command -noun "service"
+lists all commands with the noun service in it
+
+get-help dir
+displays help for dir command
+
+get-help dir -examples
+displays help for dir with examples
+
+get-help dir -detailed
+displays a more detailed help
+
+get-help dir -full
+displays the full help
+
+get-command | where-object {$_.Name.Contains("Cult")}
+This example demonstrates pipelining. The output of get-command is fed into where-object command. where-object loops through each of the objects provided by get-command. $_ represents the "this" object in the .net context. So, this command will list all the commands whose name contains the word "Cult" in it.
+
+get-command -verb "write" | sort-object length
+sorts the input of get-command based on its length.
+
+dir | select-object name, lastwritetime
+select-object selects just the name and lastwritetime attributes from the input. The input is provided by the dir command.
+
+clear-host
+same as cls in cmd.
+
+Finding number of lines of code
+(dir -include *.cs,*.cpp,*.h,*.idl,*.asmx -recurse | select-string .).Count
+
+get-childitem Env:
+To get a listing of environment variables
+
+tree .
+prints the file structure in the form of a tree for the current directory
+
+dir -h
+to show hidden directories
+
+Get-ExecutionPolicy
+in order to run ps scripts you need to have the right execution policy - Restricted, AllSigned, RemoteSigned, Unrestricted
+
+Set-ExecutionPolicy <policy name>
+to set the correct policy out of Restricted, AllSigned, RemoteSigned, Unrestricted to run ps scripts
+
+Get-AuthenticodeSignature <filename>
+to find info about the digital signature, if any that was used to sign the file.
+
+-----------------------------
+Text Commands
+-----------------------------
+get-content abc.txt 
+to print contents of file
+
+add-content -Path *.txt -Value (get-date)
+Adds date to all text files in the current directory
+
+add-content -Path *.txt -Value "abc"
+Adds abc to all text files in the current directory
+
+----------------------------
+Git Commands
+----------------------------
+git help
+to get help
+
+git branch -help
+to get help for branch, similarly you can do others like git push -help etc
+
+git status
+show status 
+
+git init
+intialize the directory for git. Creates a hidden .git directory.
+
+git add <filename or foldername\>
+To add to staging area
+
+git rm --cached <filename>
+git rm --cached <foldername\> -r 
+To unstage files or folders
+
+git commit -m "some message"
+To commit 
+
+git log
+to see the change log
+
+git cat-file -p <hashed text>
+to convert the SHA1 hashed text to original text. p is to print.
+
+git branch
+to see all branches
+
+git branch <branchname>
+to create a new branch. Git just puts the branch reference to current commit.
+
+git checkout <branchname>
+to make it the current branch
+
+git merge <branchname>
+to merge <branchname> to current branch
+
+git remote add origin <url>.git 
+to configure remote location
+
+git push -u origin master
+to push changes to remote machine for the first time
+
+git push
+subsequent pushes to remote machine
+
+git pull
+to pull changes from remote machine
+
+git branch -d <branchname>
+To delete branch
+
+----------------------------
+Team Explorer Commands
+----------------------------
+tf perf <tfs folder> /recursive > out.txt
+To check permissions
+
+tf perm <tfs folder> /allow:Checkin /group:"[AI Fund]\Contributors"
+To remove/allow permissions
+
+----------------------------
+.NET Commands
+----------------------------
+
+Get-ChildItem "hklm:SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\" 
+Find .net version
+
+----------------------------
+Azure  Commands
+----------------------------
+Login-AzureRmAccount 
+To login to your account
+
+Get-AzureRmSubscription
+To see your subscriptions
+
+Get-AzureRmContext
+Provides details of current context
+
+Get-AzureRmSubscription -SubscriptionName <name> | Select-AzureRmSubscription
+To select a subscription in case you have multiple
+
+Get-AzureRmVm
+To see VMs in current subscription
+
+Stop-AzureRmVm -ResourceGroupName <resourcegroupname> -Name <nameofresource>
+To stop the resource vm
