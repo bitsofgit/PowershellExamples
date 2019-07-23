@@ -63,6 +63,11 @@ to set the correct policy out of Restricted, AllSigned, RemoteSigned, Unrestrict
 Get-AuthenticodeSignature <filename>
 to find info about the digital signature, if any that was used to sign the file.
 
+Get-ADGroupMember <group name> | ForEach-Object{Get-ADUser $_.name} | select GivenName, Surname, samaccountname
+to find the users in an AD group
+
+Get-ADPrincipalGroupMembership <username> | select name | where {$_.name -like "*ABC*"}
+to find all AD groups a user belongs to
 -----------------------------
 Text Commands
 -----------------------------
